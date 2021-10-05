@@ -78,8 +78,6 @@ def draw_bg():
         screen.blit(pine2_img, ((x * s_width) - bg_scroll * 0.8, height - pine2_img.get_height()))
 
 
-
-
 class Character(pygame.sprite.Sprite):
 
     def __init__(self, char_type, x, y, vel, bullet):
@@ -453,7 +451,7 @@ nameMenu = True
 restart_btn = Button(width // 2 - 150, height // 2 - 50, restart_img, 1.8)
 exit_btn = Button(width // 2 + 30, height // 2 + 10, exit_img, 0.5)
 start_btn = Button(width // 2 - 190, height // 2 + 10, start_img, 0.5)
-save_btn = Button(250,190, save_img, 1)
+save_btn = Button(250, 190, save_img, 1)
 
 ammo_group = pygame.sprite.Group()
 treasure_group = pygame.sprite.Group()
@@ -502,6 +500,7 @@ def score_display():
         draw_text('High Score:' + str(data[0]), font, 'white', 370, 40)
     db.close()
 
+bg_audio.play()
 
 running = True
 keys = pygame.key.get_pressed()
@@ -520,16 +519,14 @@ while running:
     camera_scroll, level_complete = player.move(turn_left, turn_right)
     bg_scroll = camera_scroll
 
-
     if nameMenu == True:
         nameSurface = font.render(newName, True, "white")
-        userNameBorder = pygame.Rect(360, 100, nameSurface.get_width()+10, 30)
+        userNameBorder = pygame.Rect(360, 100, nameSurface.get_width() + 10, 30)
         screen.blit(nameSurface, (360, 100))
 
         passSurface = font.render(newPass, True, "white")
         userPassBorder = pygame.Rect(360, 145, passSurface.get_width() + 10, 30)
         screen.blit(passSurface, (360, 145))
-
 
         if nameActive:
             pygame.draw.rect(screen, "white", userNameBorder, 2)
@@ -551,17 +548,20 @@ while running:
 
         if save_btn.draw(screen):
             if newName != "" and newPass != "":
-                if user == newName and passw == newPass:
-                    db = sqlite3.connect('user.db')
-                    db.execute("CREATE TABLE IF NOT EXISTS user(name TEXT, password TEXT)")
-                    cursor = db.cursor()
-                    cursor.execute("INSERT INTO user(name, password) VALUES (?, ?)", (user, passw,))
-                    db.commit()
-                    db.close()
+                user = newName
+                passw = newPass
+                db = sqlite3.connect('user.db')
+                db.execute("CREATE TABLE IF NOT EXISTS user(name TEXT, password TEXT)")
+                cursor = db.cursor()
+                cursor.execute("INSERT INTO user(name, password) VALUES (?, ?)", (user, passw,))
+                db.commit()
+                db.close()
+            click_audio.play()
             nameMenu = False
 
     if menu == True:
         if start_btn.draw(screen):
+            click_audio.play()
             menu = False
         if exit_btn.draw(screen):
             running = False
@@ -718,6 +718,5 @@ while running:
                 world = Level()
 
                 player, hbar = world.game_data(level_layout)
-
     score_display()
     pygame.display.update()

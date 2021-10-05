@@ -32,6 +32,9 @@ coin_audio = pygame.mixer.Sound(f'sounds/coin.wav')
 enemy_audio = pygame.mixer.Sound(f'sounds/enemy.wav')
 die_audio = pygame.mixer.Sound(f'sounds/die.wav')
 jump_audio = pygame.mixer.Sound(f'sounds/jump.wav')
+click_audio = pygame.mixer.Sound(f'sounds/click.wav')
+bg_audio = pygame.mixer.Sound(f'sounds/background.wav')
+bg_audio.set_volume(0.1)
 
 images = []
 for i in range(tile_types):
